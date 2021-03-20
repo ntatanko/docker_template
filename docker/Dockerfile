@@ -93,6 +93,10 @@ RUN (cd LightGBM/python-package/ && python3 setup.py install)
 # pytorch
 RUN pip install --pre torch torchvision torchaudio -f https://download.pytorch.org/whl/nightly/cu110/torch_nightly.html
 
+# kaggle cli
+ENV KAGGLE_CONFIG_DIR ${APP_DIR}
+RUN pip install kaggle
+
 # copy external resources
 COPY docker/res /
 
