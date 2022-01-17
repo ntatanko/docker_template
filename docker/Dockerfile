@@ -33,7 +33,8 @@ RUN npm install -g n && n lts
 RUN pip install --upgrade pip
 
 # jupyter lab
-RUN pip install jupyterlab==v3.0.14
+# RUN pip install jupyterlab==v3.0.14
+RUN pip install jupyterlab
 
 # jupyterlab_code_formatter extension
 RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.4.10 --no-build
@@ -66,7 +67,7 @@ RUN echo "cp -r /root/.jupyter ${APP_DIR}/docker/res/root/ && \
 RUN chmod +x /usr/bin/save-jupyter-config
 
 # startup commands
-ARG JUPYTER_TOKEN="142280ny"
+ARG JUPYTER_TOKEN="mytoken"
 RUN echo "tensorboard --logdir=${APP_DIR}/.tensorboard --bind_all &" >> /cmd
 RUN echo "jupyter lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='${JUPYTER_TOKEN}' --NotebookApp.allow_origin='*' &" >> /cmd
 RUN echo "sleep infinity" >> /cmd
@@ -83,15 +84,13 @@ RUN pip install kaggle
 # pre-approve github host
 RUN mkdir /root/.ssh && ssh-keyscan github.com >> /root/.ssh/known_hosts
 
+# torch
+RUN pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+
+# for ScaledYOLOv4
+# RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+
 # python packages
-
-#RUN pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
-#RUN pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
-#RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
-#RUN pip install torch==1.7.0+cu110 torchvision==0.8.0+cu110 torchaudio==0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
-RUN pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
-
-
 RUN pip install pandas
 RUN pip install --upgrade numpy
 RUN pip install matplotlib
@@ -107,22 +106,8 @@ RUN pip install pillow
 RUN pip install onnx
 
 
-# mimic kaggle directory layout
-RUN mkdir -pv /kaggle/input
-RUN ln -s ${APP_DIR}/_data/competition_data /kaggle/input/tensorflow-great-barrier-reef
-RUN ln -s ${APP_DIR} /kaggle/input/reef21-code
-RUN ln -s ${APP_DIR}/_work/kaggle_models/ /kaggle/input/reef21-models
-RUN ln -s ${APP_DIR}/kaggle/ /kaggle/working
-ENV KAGGLE_KERNEL_RUN_TYPE=Interactive
-
-# needed for the proper random seed fix
-ENV PYTHONHASHSEED=777
-
 # tmp fix for https://github.com/jupyterlab/jupyterlab/issues/10228
 RUN jupyter server extension disable nbclassic
-
-# htop, atop - because it's good for you
-RUN apt install -y htop atop
 
 # copy external resources
 COPY docker/res /
