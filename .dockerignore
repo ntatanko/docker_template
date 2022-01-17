@@ -28,4 +28,5 @@
 **/.virtual_documents
 **/.ipynb_checkpoints
 **/__**
+**/core
 README.md
