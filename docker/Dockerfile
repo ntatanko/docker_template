@@ -1,4 +1,5 @@
-FROM nvcr.io/nvidia/tensorflow:21.08-tf2-py3
+FROM nvcr.io/nvidia/tensorflow:22.05-tf2-py3
+# FROM python:latest
 
 # where external files are mapped to
 ARG APP_DIR="/app"
@@ -33,7 +34,6 @@ RUN npm install -g n && n lts
 RUN pip install --upgrade pip
 
 # jupyter lab
-# RUN pip install jupyterlab==v3.0.14
 RUN pip install jupyterlab
 
 # jupyterlab_code_formatter extension
@@ -85,7 +85,7 @@ RUN pip install kaggle
 RUN mkdir /root/.ssh && ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 # torch
-RUN pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
 
 # for ScaledYOLOv4
 # RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
