@@ -1,5 +1,5 @@
 FROM nvcr.io/nvidia/tensorflow:22.05-tf2-py3
-# FROM python:latest
+#FROM python:latest
 
 # where external files are mapped to
 ARG APP_DIR="/app"
@@ -34,11 +34,11 @@ RUN npm install -g n && n lts
 RUN pip install --upgrade pip
 
 # jupyter lab
-RUN pip install jupyterlab
+RUN pip install jupyterlab==3.4.1
 
 # jupyterlab_code_formatter extension
-RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.4.10 --no-build
-RUN pip install jupyterlab_code_formatter==v1.4.10
+RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.4.11 --no-build
+RUN pip install jupyterlab_code_formatter==v1.4.11
 RUN jupyter server extension enable --py jupyterlab_code_formatter
 RUN pip install isort yapf black
 
@@ -95,7 +95,7 @@ RUN pip install pandas
 RUN pip install --upgrade numpy
 RUN pip install matplotlib
 RUN pip install seaborn
-RUN pip install sklearn
+RUN pip install -U scikit-learn
 RUN pip install scipy
 RUN pip install albumentations
 RUN pip install tqdm
@@ -104,7 +104,8 @@ RUN pip install tables
 RUN pip install tfa-nightly
 RUN pip install pillow
 RUN pip install onnx
-
+RUN pip install git+https://github.com/qubvel/segmentation_models.pytorch
+RUN pip install wandb
 
 # tmp fix for https://github.com/jupyterlab/jupyterlab/issues/10228
 RUN jupyter server extension disable nbclassic
