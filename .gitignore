@@ -10,3 +10,7 @@ __*.*
 kaggle.json
 docker/res/root/.jupyter/migrated
 **/core
+tmp/
+wandb/
+core
+

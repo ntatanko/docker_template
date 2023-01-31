@@ -1,4 +1,4 @@
-# Docker-based Data Science Template for VS Code
+# Docker-based Data Science Template
 
 - Python
 - Docker
@@ -11,10 +11,6 @@
 
 `$ docker/docker-forever.sh [--jupyter_port=####|8888] [--tensorboard_port=####|6006]`
 
-## Running Python from VS Code
-
-- Build docker image with "Build Image" command from the command palette.
-- Run or debug, python interpreter in the docker will be used automatically to execute the active file.
 
 ## Misc
 

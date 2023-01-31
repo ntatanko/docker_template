@@ -1,4 +1,5 @@
-FROM nvcr.io/nvidia/tensorflow:21.08-tf2-py3
+FROM nvcr.io/nvidia/tensorflow:22.12-tf2-py3
+#FROM python:latest
 
 # where external files are mapped to
 ARG APP_DIR="/app"
@@ -33,7 +34,6 @@ RUN npm install -g n && n lts
 RUN pip install --upgrade pip
 
 # jupyter lab
-# RUN pip install jupyterlab==v3.0.14
 RUN pip install jupyterlab
 
 # jupyterlab_code_formatter extension
@@ -52,10 +52,6 @@ RUN pip install plotly
 # https://github.com/krassowski/jupyterlab-lsp
 RUN pip install jupyterlab-lsp
 RUN pip install python-language-server[all]
-
-# jl debugger extension
-# RUN pip install xeus-python
-# RUN jupyter labextension install @jupyterlab/debugger --no-build
 
 # build jupyter lab assets
 RUN jupyter lab build
@@ -85,26 +81,20 @@ RUN pip install kaggle
 RUN mkdir /root/.ssh && ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 # torch
-RUN pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
-
-# for ScaledYOLOv4
-# RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install torch torchvision torchaudio
 
 # python packages
 RUN pip install pandas
 RUN pip install --upgrade numpy
 RUN pip install matplotlib
 RUN pip install seaborn
-RUN pip install sklearn
+RUN pip install -U scikit-learn
 RUN pip install scipy
 RUN pip install albumentations
 RUN pip install tqdm
 RUN apt-get install -y libsndfile1
-RUN pip install tables
-RUN pip install tfa-nightly
 RUN pip install pillow
 RUN pip install onnx
-
 
 # tmp fix for https://github.com/jupyterlab/jupyterlab/issues/10228
 RUN jupyter server extension disable nbclassic
