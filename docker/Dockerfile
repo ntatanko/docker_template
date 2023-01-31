@@ -34,11 +34,11 @@ RUN npm install -g n && n lts
 RUN pip install --upgrade pip
 
 # jupyter lab
-RUN pip install jupyterlab
+RUN pip install jupyterlab==v3.5.0
 
 # jupyterlab_code_formatter extension
-RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.4.10 --no-build
-RUN pip install jupyterlab_code_formatter==v1.4.10
+RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.5.3 --no-build
+RUN pip install jupyterlab_code_formatter
 RUN jupyter server extension enable --py jupyterlab_code_formatter
 RUN pip install isort yapf black
 
@@ -96,10 +96,8 @@ RUN apt-get install -y libsndfile1
 RUN pip install pillow
 RUN pip install onnx
 
-# tmp fix for https://github.com/jupyterlab/jupyterlab/issues/10228
-RUN jupyter server extension disable nbclassic
-
 # copy external resources
+ENV PATH="/opt:${PATH}"
 COPY docker/res /
 
 WORKDIR ${APP_DIR}
