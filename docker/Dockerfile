@@ -1,14 +1,11 @@
-FROM nvcr.io/nvidia/tensorflow:22.12-tf2-py3
-#FROM python:latest
+#FROM nvcr.io/nvidia/tensorflow:22.12-tf2-py3
+FROM python:latest
 
 # where external files are mapped to
 ARG APP_DIR="/app"
 
 # build directory
 WORKDIR /tmp
-
-# supress too many annying messages from tf
-ENV TF_CPP_MIN_LOG_LEVEL=3
 
 # for vs code, see https://aka.ms/vscode-docker-python
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -34,38 +31,27 @@ RUN npm install -g n && n lts
 RUN pip install --upgrade pip
 
 # jupyter lab
-RUN pip install jupyterlab==v3.5.0
+RUN pip install jupyterlab
 
 # jupyterlab_code_formatter extension
-RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.5.3 --no-build
-RUN pip install jupyterlab_code_formatter
-RUN jupyter server extension enable --py jupyterlab_code_formatter
+RUN pip install jupyterlab-code-formatter
 RUN pip install isort yapf black
 
-# plotly jl extension
+# plotly
 RUN pip install "ipywidgets>=7.5"
-RUN jupyter labextension install jupyterlab-plotly --no-build
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget --no-build
 RUN pip install plotly
 
 # lsp jl extension
-# https://github.com/krassowski/jupyterlab-lsp
 RUN pip install jupyterlab-lsp
 RUN pip install python-language-server[all]
 
 # build jupyter lab assets
 RUN jupyter lab build
 
-# jupyter config saving
-RUN echo "cp -r /root/.jupyter ${APP_DIR}/docker/res/root/ && \
-    rm -rf ${APP_DIR}/docker/res/root/.jupyter/lab/workspaces && echo \"done\"" \
-    >> /usr/bin/save-jupyter-config
-RUN chmod +x /usr/bin/save-jupyter-config
-
 # startup commands
 ARG JUPYTER_TOKEN="mytoken"
 RUN echo "tensorboard --logdir=${APP_DIR}/.tensorboard --bind_all &" >> /cmd
-RUN echo "jupyter lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='${JUPYTER_TOKEN}' --NotebookApp.allow_origin='*' &" >> /cmd
+RUN echo "jupyter lab --ServerApp.ip=0.0.0.0 --ServerApp.allow_root=true --no-browser --IdentityProvider.token='${JUPYTER_TOKEN}' &" >> /cmd
 RUN echo "sleep infinity" >> /cmd
 CMD ["sh", "/cmd"]
 
@@ -92,8 +78,6 @@ RUN pip install -U scikit-learn
 RUN pip install scipy
 RUN pip install albumentations
 RUN pip install tqdm
-RUN apt-get install -y libsndfile1
-RUN pip install pillow
 RUN pip install onnx
 
 # copy external resources
